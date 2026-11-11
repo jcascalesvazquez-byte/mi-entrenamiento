@@ -1,0 +1,21 @@
+MI ENTRENAMIENTO — PWA PARA ANDROID
+
+Incluye:
+- Foto de perfil integrada en la cabecera (assets/perfil.png).
+- Semana de ciclismo, carrera, fuerza y recuperación.
+- Rutinas de gimnasio con series, repeticiones y alternativas sencillas.
+- Registro de actividad y seguimiento de molestias del isquiotibial.
+- Datos guardados localmente en el navegador y exportación JSON.
+- Manifiesto y service worker para instalación y uso offline.
+
+INSTALACIÓN:
+1. Publica el contenido de esta carpeta en un alojamiento HTTPS (por ejemplo, GitHub Pages).
+2. Abre la dirección HTTPS desde Chrome en Android.
+3. Menú ⋮ > "Instalar aplicación" o "Añadir a pantalla de inicio".
+4. Confirma. Aparecerá el icono "ME" en la pantalla de inicio.
+
+IMPORTANTE:
+No se puede instalar directamente desde el ZIP ni desde el chat: Android requiere que la PWA se sirva desde HTTPS para instalarla correctamente. Esta carpeta contiene la aplicación lista para publicar. Los datos se guardan en el navegador/dispositivo y no se sincronizan entre dispositivos.
+
+Salud:
+El plan es una plantilla de seguimiento, no una prescripción médica. Ajusta el entrenamiento a tus síntomas y busca valoración profesional por la molestia persistente del isquiotibial.
