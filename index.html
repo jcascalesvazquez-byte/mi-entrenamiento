@@ -10,8 +10,13 @@
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Mi Entrenamiento</title>
+
 <style>
-:root{--navy:#102b4e;--blue:#1c5d91;--lime:#c8ed45;--bg:#f3f6fa;--ink:#172536;--muted:#64748b;--card:#fff;--line:#e4eaf1}
+:root{
+--navy:#102b4e;--blue:#1c5d91;--lime:#c8ed45;
+--bg:#f3f6fa;--ink:#172536;--muted:#64748b;
+--card:#fff;--line:#e4eaf1
+}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink)}
 header{background:linear-gradient(140deg,#102b4e,#1c5d91);color:white;padding:22px 18px 28px;border-radius:0 0 26px 26px}
@@ -40,7 +45,6 @@ button.secondary{background:#eaf0f6;color:var(--navy)}
 button.lime{background:var(--lime);color:#172536}
 button.danger{background:#fff0ef;color:#a52d26}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.done{background:#eaf7d0!important;color:#304a08!important}
 label{display:block;font-size:13px;font-weight:600;margin:10px 0 5px}
 input,select,textarea{width:100%;padding:11px;border:1px solid #d8e1ea;border-radius:10px;font:inherit;background:white}
 textarea{min-height:70px}
@@ -69,17 +73,30 @@ footer button.selected{background:#edf3f8;color:var(--navy)}
 .chart-row{display:grid;grid-template-columns:105px 1fr 35px;gap:8px;align-items:center;margin:10px 0;font-size:12px}
 .chart-track{height:9px;background:#e7edf3;border-radius:20px;overflow:hidden}
 .chart-fill{height:100%;background:#1c5d91;border-radius:20px}
+.period-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.period-box{background:#f0f5fa;border-radius:12px;padding:12px}
+.period-box strong{display:block;font-size:17px;color:var(--navy)}
+.period-box span{font-size:11px;color:var(--muted)}
+.actual-item{padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+.actual-item:last-child{border:0}
 #editStatus{color:#1c5d91;font-weight:700}
 [hidden]{display:none!important}
-@media(max-width:370px){.stats{gap:5px}.stat strong{font-size:17px}.chart-row{grid-template-columns:85px 1fr 25px}}
+@media(max-width:370px){
+.stats{gap:5px}.stat strong{font-size:17px}
+.chart-row{grid-template-columns:85px 1fr 25px}
+}
 </style>
 </head>
+
 <body>
 
 <header>
  <div class="top">
   <img class="avatar" src="./perfil.png" alt="Foto de perfil" loading="eager" fetchpriority="high" decoding="sync">
-  <div><h1>Mi Entrenamiento</h1><p>Tu semana de bici, carrera y fuerza</p></div>
+  <div>
+   <h1>Mi Entrenamiento</h1>
+   <p>Tu semana de bici, carrera y fuerza</p>
+  </div>
  </div>
  <div class="meta">
   <span class="pill">62 años</span>
@@ -90,18 +107,39 @@ footer button.selected{background:#edf3f8;color:var(--navy)}
 
 <main>
 
+<!-- SEMANA -->
+
 <section id="inicio" class="panel show">
- <h2 class="section-title">Tu semana</h2>
+
+ <h2 class="section-title">Tu semana real</h2>
+ <p class="muted">Aquí aparecen los entrenamientos que realmente has realizado, independientemente del día en que estaban previstos.</p>
+
  <div class="week" id="week"></div>
+
  <div class="card">
-  <h3>Plan de la semana</h3>
-  <p class="sub">Marca cada sesión cuando la completes.</p>
+  <h3>Actividad realizada esta semana</h3>
+  <p class="sub" id="weekDates"></p>
   <div class="progress"><span id="progressBar"></span></div>
-  <p class="muted" id="progressText">0 de 7 días registrados</p>
+  <p class="muted" id="progressText">0 entrenamientos realizados</p>
+  <div class="stats">
+   <div class="stat"><strong id="weekSessions">0</strong><span>Sesiones</span></div>
+   <div class="stat"><strong id="weekKm">0</strong><span>Kilómetros</span></div>
+   <div class="stat"><strong id="weekPain">0</strong><span>Con molestias</span></div>
+  </div>
  </div>
+
+ <h2 class="section-title">Plan previsto de la semana</h2>
+ <p class="muted">Este es tu plan original. Puedes registrar una sesión en cualquier otro día sin alterar la planificación.</p>
+
  <div id="sessions"></div>
- <div class="notice"><strong>Cuida el isquiotibial.</strong> Mantén de momento el ritmo cómodo de referencia de 6:10 min/km. No fuerces el objetivo de correr más rápido ni aumentes distancia si reaparece la molestia. Si aparece dolor, cambia la sesión por descanso y consulta con un fisioterapeuta o profesional sanitario.</div>
+
+ <div class="notice">
+  <strong>Cuida el isquiotibial.</strong>
+  Mantén de momento el ritmo cómodo de referencia de 6:10 min/km. No fuerces el objetivo de correr más rápido ni aumentes distancia si reaparece la molestia. Si aparece dolor, cambia la sesión por descanso y consulta con un fisioterapeuta o profesional sanitario.
+ </div>
 </section>
+
+<!-- GIMNASIO -->
 
 <section id="fuerza" class="panel">
  <h2 class="section-title">Rutinas de gimnasio</h2>
@@ -130,14 +168,17 @@ footer button.selected{background:#edf3f8;color:var(--navy)}
  </div>
 </section>
 
+<!-- REGISTRO -->
+
 <section id="registro" class="panel">
+
  <h2 class="section-title">Registro de entrenamiento</h2>
 
  <div class="card">
   <h3 id="formTitle">Añadir entrenamiento</h3>
-  <p class="sub" id="editStatus">Registra aquí tus sesiones.</p>
+  <p class="sub" id="editStatus">Registra aquí lo que realmente has hecho.</p>
 
-  <label for="date">Fecha</label>
+  <label for="date">Fecha real del entrenamiento</label>
   <input id="date" type="date">
 
   <label for="activity">Actividad</label>
@@ -151,7 +192,7 @@ footer button.selected{background:#edf3f8;color:var(--navy)}
   </select>
 
   <label for="distance">Distancia (km)</label>
-  <input id="distance" type="number" min="0" step="0.1" placeholder="Ej. 5">
+  <input id="distance" type="number" min="0" step="0.1" placeholder="Ej. 50">
 
   <label for="pace">Ritmo (min/km) o duración</label>
   <input id="pace" placeholder="Ej. 6:10 o 1 h 45 min">
@@ -182,21 +223,62 @@ footer button.selected{background:#edf3f8;color:var(--navy)}
   </div>
  </div>
 
+ <!-- RESUMEN SEMANAL, MENSUAL Y ANUAL -->
+
  <div class="card">
-  <h3>Estadísticas</h3>
-  <p class="sub">Se actualizan automáticamente al guardar, editar o borrar sesiones.</p>
+  <h3>Estadísticas reales</h3>
+  <p class="sub">Consulta lo que realmente has entrenado.</p>
+
+  <label for="period">Periodo de consulta</label>
+  <select id="period">
+   <option value="week">Esta semana</option>
+   <option value="month">Este mes</option>
+   <option value="year">Este año</option>
+   <option value="all">Todo el historial</option>
+  </select>
+
+  <label for="referenceDate">Selecciona una fecha de referencia</label>
+  <input type="date" id="referenceDate">
+
+  <p class="muted" id="periodLabel"></p>
+
   <div class="stats">
    <div class="stat"><strong id="totalSessions">0</strong><span>Sesiones</span></div>
    <div class="stat"><strong id="totalKm">0</strong><span>Kilómetros</span></div>
    <div class="stat"><strong id="totalPain">0</strong><span>Con molestias</span></div>
   </div>
+
+  <div class="period-grid">
+   <div class="period-box">
+    <strong id="bikeKm">0</strong>
+    <span>Km de bicicleta</span>
+   </div>
+   <div class="period-box">
+    <strong id="runKm">0</strong>
+    <span>Km de carrera</span>
+   </div>
+   <div class="period-box">
+    <strong id="gymSessions">0</strong>
+    <span>Sesiones de gimnasio</span>
+   </div>
+   <div class="period-box">
+    <strong id="daysTrained">0</strong>
+    <span>Días entrenados</span>
+   </div>
+  </div>
+
   <h3 style="margin-top:20px">Actividades registradas</h3>
   <div id="activityChart" class="muted">Todavía no hay datos.</div>
+
+  <h3 style="margin-top:20px">Entrenamientos de este periodo</h3>
+  <div id="periodLogs" class="muted">Todavía no hay datos.</div>
  </div>
 
+ <!-- HISTORIAL -->
+
  <div class="card">
-  <h3>Historial de entrenamientos</h3>
-  <p class="sub">Puedes editar o eliminar cada sesión individualmente.</p>
+  <h3>Historial completo</h3>
+  <p class="sub">Todos tus entrenamientos, independientemente de cuándo los realizaste. Puedes editar fechas, datos o eliminar sesiones.</p>
   <div id="history" class="muted">Todavía no hay registros.</div>
   <div class="actions">
    <button class="danger" id="deleteAll">Borrar todo el historial</button>
@@ -204,23 +286,27 @@ footer button.selected{background:#edf3f8;color:var(--navy)}
  </div>
 </section>
 
+<!-- PLAN -->
+
 <section id="ajustes" class="panel">
  <h2 class="section-title">Tu plan y seguridad</h2>
 
  <div class="card">
-  <h3>Distribución semanal</h3>
+  <h3>Distribución semanal prevista</h3>
   <ul>
    <li><b>Domingo:</b> carretera ≥50 km o MTB ≥35 km, a elegir. Ritmo sostenible.</li>
    <li><b>Lunes:</b> descanso o paseo tranquilo de 30 min.</li>
    <li><b>Martes:</b> fuerza principal + 5 km suaves. Referencia actual: 6:10 min/km.</li>
    <li><b>Miércoles:</b> descanso o paseo tranquilo de 30 min.</li>
-   <li><b>Jueves:</b> fuerza ligera + carrera. Progresar hacia 6–7 km solo si sigues sin síntomas; no perseguir todavía ritmos inferiores a 6:00.</li>
+   <li><b>Jueves:</b> fuerza ligera + carrera. Progresar hacia 6–7 km solo si sigues sin síntomas.</li>
    <li><b>Viernes:</b> descanso o paseo tranquilo de 30 min.</li>
    <li><b>Sábado:</b> 5 km suaves, alrededor de 6:10 min/km.</li>
   </ul>
  </div>
 
- <div class="notice">Calienta 5–10 minutos antes de correr y termina caminando suavemente. No uses la muslera como garantía de protección. Detén la actividad ante dolor, mareo o malestar. Si reaparece dolor en el muslo, no intentes compensar ni correr a través de él.</div>
+ <div class="notice">
+  Calienta 5–10 minutos antes de correr y termina caminando suavemente. No uses la muslera como garantía de protección. Detén la actividad ante dolor, mareo o malestar. Si reaparece dolor en el muslo, no intentes compensar ni correr a través de él.
+ </div>
 
  <div class="card">
   <h3>Datos guardados</h3>
@@ -239,14 +325,15 @@ footer button.selected{background:#edf3f8;color:var(--navy)}
 </footer>
 
 <script>
+
 const plan=[
- {day:"Dom",name:"Bicicleta",detail:"Carretera ≥50 km o MTB ≥35 km",type:"Bici",extra:"Elige una modalidad. Mantén un esfuerzo sostenible; evita sprints si notas fatiga."},
- {day:"Lun",name:"Recuperación",detail:"Descanso o paseo tranquilo 30 min",type:"Recuperación",extra:"Paseo opcional, muy cómodo."},
- {day:"Mar",name:"Gimnasio + carrera",detail:"Fuerza principal + 5 km a ritmo cómodo",type:"Fuerza + carrera",extra:"Referencia actual: 6:10 min/km. Separa gimnasio y carrera unas horas si puedes."},
- {day:"Mié",name:"Recuperación",detail:"Descanso o paseo tranquilo 30 min",type:"Recuperación",extra:"Prioriza sueño y recuperación."},
- {day:"Jue",name:"Gimnasio suave + carrera",detail:"Fuerza ligera + progresión hacia 6–7 km",type:"Fuerza + carrera",extra:"No busques todavía ritmos inferiores a 6:00 min/km. Mantén 5 km si esa es la distancia que toleras mejor."},
- {day:"Vie",name:"Recuperación",detail:"Descanso o paseo tranquilo 30 min",type:"Recuperación",extra:"Paseo opcional, sin exigencia."},
- {day:"Sáb",name:"Carrera suave",detail:"5 km alrededor de 6:10 min/km",type:"Carrera",extra:"Solo si sigues sin molestias durante la carrera y al día siguiente."}
+ {day:"Dom",name:"Bicicleta",detail:"Carretera ≥50 km o MTB ≥35 km",type:"Bici",extra:"Elige una modalidad. Mantén un esfuerzo sostenible.",activity:"Bicicleta carretera"},
+ {day:"Lun",name:"Recuperación",detail:"Descanso o paseo tranquilo 30 min",type:"Recuperación",extra:"Paseo opcional, muy cómodo.",activity:"Paseo"},
+ {day:"Mar",name:"Gimnasio + carrera",detail:"Fuerza principal + 5 km a ritmo cómodo",type:"Fuerza + carrera",extra:"Referencia actual: 6:10 min/km.",activity:"Carrera"},
+ {day:"Mié",name:"Recuperación",detail:"Descanso o paseo tranquilo 30 min",type:"Recuperación",extra:"Prioriza sueño y recuperación.",activity:"Paseo"},
+ {day:"Jue",name:"Gimnasio suave + carrera",detail:"Fuerza ligera + progresión hacia 6–7 km",type:"Fuerza + carrera",extra:"No busques todavía ritmos inferiores a 6:00 min/km.",activity:"Carrera"},
+ {day:"Vie",name:"Recuperación",detail:"Descanso o paseo tranquilo 30 min",type:"Recuperación",extra:"Paseo opcional, sin exigencia.",activity:"Paseo"},
+ {day:"Sáb",name:"Carrera suave",detail:"5 km alrededor de 6:10 min/km",type:"Carrera",extra:"Solo si sigues sin molestias.",activity:"Carrera"}
 ];
 
 const key="miEntrenamiento_v1";
@@ -277,19 +364,18 @@ function localISO(d){
  return `${year}-${month}-${day}`;
 }
 
-const today=new Date();
 const iso=localISO;
+const today=new Date();
+
 $("date").value=iso(today);
+$("referenceDate").value=iso(today);
 
 function mondayDate(d){
- let x=new Date(d);
+ let x=new Date(d+"T12:00:00");
  let day=(x.getDay()+6)%7;
  x.setDate(x.getDate()-day);
- x.setHours(0,0,0,0);
  return x;
 }
-
-const start=mondayDate(today);
 
 function saveData(){
  localStorage.setItem(key,JSON.stringify(data));
@@ -301,48 +387,144 @@ function escapeHtml(s){
  }[c]));
 }
 
+function formatDate(date){
+ if(!date)return "";
+ const d=new Date(date+"T12:00:00");
+ return d.toLocaleDateString("es-ES",{
+  weekday:"short",day:"2-digit",month:"2-digit",year:"numeric"
+ });
+}
+
+function weekRange(date){
+ const start=mondayDate(date);
+ const end=new Date(start);
+ end.setDate(start.getDate()+6);
+ return {start:iso(start),end:iso(end)};
+}
+
+function getPeriodLogs(){
+ const period=$("period").value;
+ const reference=$("referenceDate").value||iso(today);
+
+ let start="",end="";
+
+ if(period==="week"){
+  const r=weekRange(reference);
+  start=r.start;
+  end=r.end;
+ }else if(period==="month"){
+  start=reference.slice(0,7)+"-01";
+  const d=new Date(start+"T12:00:00");
+  d.setMonth(d.getMonth()+1);
+  d.setDate(0);
+  end=iso(d);
+ }else if(period==="year"){
+  start=reference.slice(0,4)+"-01-01";
+  end=reference.slice(0,4)+"-12-31";
+ }
+
+ const logs=data.logs.filter(x=>{
+  if(!x.date)return false;
+  if(period==="all")return true;
+  return x.date>=start&&x.date<=end;
+ });
+
+ return {logs,start,end,period};
+}
+
 function renderWeek(){
  const week=$("week");
  week.innerHTML="";
 
- plan.forEach((p,i)=>{
-  let d=new Date(start);
-  d.setDate(start.getDate()+i);
-  let k=iso(d);
-  let el=document.createElement("div");
-  el.className="day"+(k===iso(today)?" active":"");
-  el.innerHTML=`<b>${p.day}</b>${d.getDate()}<small>${data.done[k]?"✓":p.type==="Recuperación"?"·":"○"}</small>`;
-  week.append(el);
- });
+ const start=mondayDate(iso(today));
 
- let completed=Object.values(data.done).filter(Boolean).length;
- $("progressBar").style.width=(completed/7*100)+"%";
- $("progressText").textContent=completed+" de 7 días marcados como completados";
+ for(let i=0;i<7;i++){
+  const d=new Date(start);
+  d.setDate(start.getDate()+i);
+  const k=iso(d);
+  const count=data.logs.filter(x=>x.date===k).length;
+
+  const el=document.createElement("div");
+  el.className="day"+(k===iso(today)?" active":"");
+  el.innerHTML=`
+   <b>${["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"][i]}</b>
+   ${d.getDate()}
+   <small>${count?"✓ "+count:"·"}</small>
+  `;
+  week.append(el);
+ }
+
+ const range=weekRange(iso(today));
+ const logs=data.logs.filter(x=>x.date>=range.start&&x.date<=range.end);
+ const km=logs.reduce((s,x)=>s+(Number(x.distance)||0),0);
+ const pain=logs.filter(x=>Number(x.pain)>0).length;
+
+ $("weekDates").textContent=formatDate(range.start)+" – "+formatDate(range.end);
+ $("weekSessions").textContent=logs.length;
+ $("weekKm").textContent=km.toLocaleString("es-ES",{maximumFractionDigits:1});
+ $("weekPain").textContent=pain;
+
+ const days=new Set(logs.map(x=>x.date)).size;
+ $("progressBar").style.width=(days/7*100)+"%";
+ $("progressText").textContent=logs.length+" sesiones realizadas en "+days+" días diferentes";
 
  $("sessions").innerHTML=plan.map((p,i)=>{
-  let d=new Date(start);
+  const d=new Date(start);
   d.setDate(start.getDate()+i);
-  let k=iso(d);
+  const k=iso(d);
+  const actual=data.logs.filter(x=>x.date===k);
+
   return `<div class="card">
    <span class="tag">${p.day} · ${p.type}</span>
    <h3>${p.name}</h3>
    <p class="sub">${p.detail}</p>
    <p class="muted">${p.extra}</p>
+   <p class="muted">${actual.length?"✓ "+actual.length+" registro(s) real(es) en este día":"Sin registro de actividad en este día"}</p>
    <div class="actions">
-   <button class="${data.done[k]?'done':'lime'}" onclick="toggle('${k}')">${data.done[k]?'✓ Completado':'Marcar completado'}</button>
+    <button class="lime" onclick="registerPlanned('${k}','${p.activity}')">Registrar actividad</button>
    </div>
   </div>`;
  }).join("");
 }
 
+function registerPlanned(date,activity){
+ clearForm();
+ $("date").value=date;
+ $("activity").value=activity;
+ showTab("registro");
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
 function renderStats(){
- const logs=data.logs;
- const km=logs.reduce((sum,x)=>sum+(Number(x.distance)||0),0);
+ const result=getPeriodLogs();
+ const logs=result.logs;
+
+ const km=logs.reduce((s,x)=>s+(Number(x.distance)||0),0);
  const pain=logs.filter(x=>Number(x.pain)>0).length;
+
+ const bike=logs.filter(x=>
+  x.activity==="Bicicleta carretera"||x.activity==="Bicicleta montaña"
+ );
+ const run=logs.filter(x=>x.activity==="Carrera");
+ const gym=logs.filter(x=>x.activity==="Gimnasio");
+
+ const bikeKm=bike.reduce((s,x)=>s+(Number(x.distance)||0),0);
+ const runKm=run.reduce((s,x)=>s+(Number(x.distance)||0),0);
 
  $("totalSessions").textContent=logs.length;
  $("totalKm").textContent=km.toLocaleString("es-ES",{maximumFractionDigits:1});
  $("totalPain").textContent=pain;
+ $("bikeKm").textContent=bikeKm.toLocaleString("es-ES",{maximumFractionDigits:1});
+ $("runKm").textContent=runKm.toLocaleString("es-ES",{maximumFractionDigits:1});
+ $("gymSessions").textContent=gym.length;
+ $("daysTrained").textContent=new Set(logs.filter(x=>x.activity!=="Descanso").map(x=>x.date)).size;
+
+ let label="Todo el historial";
+ if(result.period==="week")label="Semana: "+formatDate(result.start)+" – "+formatDate(result.end);
+ if(result.period==="month")label="Mes: "+result.start.slice(0,7);
+ if(result.period==="year")label="Año: "+result.start.slice(0,4);
+
+ $("periodLabel").textContent=label;
 
  const counts={};
  logs.forEach(x=>{
@@ -353,21 +535,36 @@ function renderStats(){
  const chart=$("activityChart");
 
  if(!entries.length){
-  chart.textContent="Todavía no hay datos.";
-  return;
+  chart.textContent="Todavía no hay datos en este periodo.";
+ }else{
+  const max=Math.max(...entries.map(x=>x[1]));
+  chart.innerHTML=entries.map(([name,count])=>`
+   <div class="chart-row">
+    <span>${escapeHtml(name)}</span>
+    <div class="chart-track">
+     <div class="chart-fill" style="width:${count/max*100}%"></div>
+    </div>
+    <strong>${count}</strong>
+   </div>
+  `).join("");
  }
 
- const max=Math.max(...entries.map(x=>x[1]));
+ const periodLogs=$("periodLogs");
 
- chart.innerHTML=entries.map(([name,count])=>`
-  <div class="chart-row">
-   <span>${escapeHtml(name)}</span>
-   <div class="chart-track">
-    <div class="chart-fill" style="width:${count/max*100}%"></div>
+ if(!logs.length){
+  periodLogs.innerHTML="No has registrado entrenamientos en este periodo.";
+ }else{
+  periodLogs.innerHTML=[...logs].sort((a,b)=>
+   String(b.date).localeCompare(String(a.date))
+  ).map(x=>`
+   <div class="actual-item">
+    <strong>${formatDate(x.date)}</strong><br>
+    ${escapeHtml(x.activity)}
+    ${x.distance? " · "+escapeHtml(x.distance)+" km":""}
+    ${x.pace?" · "+escapeHtml(x.pace):""}
    </div>
-   <strong>${count}</strong>
-  </div>
- `).join("");
+  `).join("");
+ }
 }
 
 function renderHistory(){
@@ -387,7 +584,7 @@ function renderHistory(){
 
  history.innerHTML=sorted.map(x=>`
   <div class="history-item">
-   <h4>${escapeHtml(x.date)} · ${escapeHtml(x.activity)}</h4>
+   <h4>${formatDate(x.date)} · ${escapeHtml(x.activity)}</h4>
    <div class="muted">
     ${x.distance?escapeHtml(x.distance)+" km · ":""}
     ${escapeHtml(x.pace||"Sin duración registrada")}
@@ -411,14 +608,8 @@ function render(){
  renderStats();
 }
 
-function toggle(k){
- data.done[k]=!data.done[k];
- saveData();
- renderWeek();
-}
-
 function clearForm(){
- $("date").value=iso(new Date());
+ $("date").value=iso(today);
  $("activity").selectedIndex=0;
  $("distance").value="";
  $("pace").value="";
@@ -427,7 +618,7 @@ function clearForm(){
  $("notes").value="";
  editingId=null;
  $("formTitle").textContent="Añadir entrenamiento";
- $("editStatus").textContent="Registra aquí tus sesiones.";
+ $("editStatus").textContent="Registra aquí lo que realmente has hecho.";
  $("save").textContent="Guardar registro";
  $("cancelEdit").hidden=true;
 }
@@ -449,7 +640,7 @@ function editLog(id){
  if(!log)return;
 
  editingId=id;
- $("date").value=log.date||iso(new Date());
+ $("date").value=log.date||iso(today);
  $("activity").value=log.activity;
  $("distance").value=log.distance||"";
  $("pace").value=log.pace||"";
@@ -458,7 +649,7 @@ function editLog(id){
  $("notes").value=log.notes||"";
 
  $("formTitle").textContent="Editar entrenamiento";
- $("editStatus").textContent="Estás modificando un registro existente.";
+ $("editStatus").textContent="Modifica la fecha o los datos del entrenamiento.";
  $("save").textContent="Guardar cambios";
  $("cancelEdit").hidden=false;
 
@@ -535,6 +726,9 @@ $("clear").onclick=clearForm;
 $("cancelEdit").onclick=clearForm;
 $("deleteAll").onclick=deleteAll;
 
+$("period").onchange=renderStats;
+$("referenceDate").onchange=renderStats;
+
 $("export").onclick=()=>{
  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
  const url=URL.createObjectURL(blob);
@@ -568,6 +762,7 @@ if("serviceWorker" in navigator){
 
 saveData();
 render();
+
 </script>
 </body>
 </html>
